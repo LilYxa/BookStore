@@ -18,7 +18,7 @@ public class MainMenu implements Menu {
         subMenus = new ArrayList<>();
         subMenus.add(new AddRecordMenu(db));
         subMenus.add(new RemoveRecordMenu());
-        subMenus.add(new DisplayInfoMenu());
+        subMenus.add(new DisplayInfoMenu(db));
     }
 
     @Override
