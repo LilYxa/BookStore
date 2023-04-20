@@ -10,66 +10,82 @@ import java.util.List;
 public class CategoryRepository {
     private Connection connection;
 
+    private Manager DAO;
+
     public CategoryRepository(Connection connection) {
         this.connection = connection;
+        this.DAO = new Manager(connection);
     }
+
+//    public void addCategory(Category category) {
+//        String sql = "INSERT INTO categories(name) VALUES(?)";
+//        try (PreparedStatement statement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+//            statement.setString(1, category.getName());
+//
+//            int rowsInserted = statement.executeUpdate();
+//            if (rowsInserted == 0)
+//                throw new SQLException("Ошибка выполнения!");
+//
+//            ResultSet resultSet = statement.getGeneratedKeys();
+//            if (resultSet.next()) {
+//                int id = resultSet.getInt(1);
+//                category.setId(id);
+//            } else
+//                throw new SQLException("Ошибка при добавлении категории!");
+//        } catch (SQLException e) {
+//            System.err.println("Ошибка при выполнении запроса!");
+//            e.printStackTrace();
+//        }
+//    }
 
     public void addCategory(Category category) {
-        String sql = "INSERT INTO categories(name) VALUES(?)";
-        try (PreparedStatement statement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-            statement.setString(1, category.getName());
-
-            int rowsInserted = statement.executeUpdate();
-            if (rowsInserted == 0)
-                throw new SQLException("Ошибка выполнения!");
-
-            ResultSet resultSet = statement.getGeneratedKeys();
-            if (resultSet.next()) {
-                int id = resultSet.getInt(1);
-                category.setId(id);
-            } else
-                throw new SQLException("Ошибка при добавлении категории!");
-        } catch (SQLException e) {
-            System.err.println("Ошибка при выполнении запроса!");
-            e.printStackTrace();
-        }
+        String[] fields = {"name"};
+        Object[] values = {category.getName()};
+        int id = DAO.insertData("categories", fields, values);
+        category.setId(id);
     }
 
-    public Category getCategory(int id) {
-        String sql = "SELECT * FROM categories WHERE id = ?";
-        try (PreparedStatement statement = connection.prepareStatement(sql)) {
-            statement.setInt(1, id);
-            ResultSet resultSet = statement.executeQuery();
-            if (resultSet.next()) {
-                return new Category(
-                        resultSet.getInt("id"),
-                        resultSet.getString("name")
-                );
-            }
-        } catch (SQLException e) {
-            System.err.println("Ошибка при выполнении запроса!");
-            e.printStackTrace();
-        }
-        return null;
+//    public Category getCategory(int id) {
+//        String sql = "SELECT * FROM categories WHERE id = ?";
+//        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+//            statement.setInt(1, id);
+//            ResultSet resultSet = statement.executeQuery();
+//            if (resultSet.next()) {
+//                return new Category(
+//                        resultSet.getInt("id"),
+//                        resultSet.getString("name")
+//                );
+//            }
+//        } catch (SQLException e) {
+//            System.err.println("Ошибка при выполнении запроса!");
+//            e.printStackTrace();
+//        }
+//        return null;
+//    }
+
+    public Category getCategory(Object identifier) {
+        Category category = new Category();
+        String field = (identifier instanceof String) ? "name" : "id";
+        return (Category) DAO.getData("categories", field, identifier, category);
     }
 
-    public Category getCategoryByName(String name) {
-        String sql = "SELECT * FROM categories WHERE name = ?";
-        try (PreparedStatement statement = connection.prepareStatement(sql)) {
-            statement.setString(1, name);
-            ResultSet resultSet = statement.executeQuery();
-            if (resultSet.next()) {
-                return new Category(
-                        resultSet.getInt("id"),
-                        resultSet.getString("name")
-                );
-            }
-        } catch (SQLException e) {
-            System.err.println("Ошибка при выполнении запроса!");
-            e.printStackTrace();
-        }
-        return null;
-    }
+//    public Category getCategoryByName(String name) {
+//        String sql = "SELECT * FROM categories WHERE name = ?";
+//        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+//            statement.setString(1, name);
+//            ResultSet resultSet = statement.executeQuery();
+//            if (resultSet.next()) {
+//                return new Category(
+//                        resultSet.getInt("id"),
+//                        resultSet.getString("name")
+//                );
+//            }
+//        } catch (SQLException e) {
+//            System.err.println("Ошибка при выполнении запроса!");
+//            e.printStackTrace();
+//        }
+//        return null;
+//    }
 
     public List<Category> getAllCategories() {
         String sql = "SELECT * FROM categories";

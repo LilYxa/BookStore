@@ -35,7 +35,8 @@ public class BookStoreManager {
         in.nextLine();
 
         //Проверка на существование автора
-        Author author = authorRepository.getAuthorByName(author_name);
+//        Author author = authorRepository.getAuthorByName(author_name);
+        Author author = authorRepository.getAuthor(author_name);
         if (author == null) {
             System.out.println("Такого автора нет. Его необходимо добавить.");
             System.out.print("Введите страну автора: ");
@@ -49,7 +50,8 @@ public class BookStoreManager {
         }
 
         //Проверка на существование категории
-        Category category = categoryRepository.getCategoryByName(category_name);
+//        Category category = categoryRepository.getCategoryByName(category_name);
+        Category category = categoryRepository.getCategory(category_name);
         if (category == null) {
             category =  new Category(category_name);
             categoryRepository.addCategory(category);

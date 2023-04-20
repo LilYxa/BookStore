@@ -8,21 +8,31 @@ public class Order {
     private String customerEmail;
     private LocalDateTime orderDate;
     private Book book;
+    private int bookId;
 
-    public Order(String customerName, String customerEmail, Book book, LocalDateTime orderDate) {
+    public Order(String customerName, String customerEmail, int bookId, LocalDateTime orderDate) {
         this.customerName = customerName;
         this.customerEmail = customerEmail;
-        this.book = book;
+        this.bookId = bookId;
         this.orderDate = LocalDateTime.now();
     }
 
-    public Order(int id, String customerName, String customerEmail, Book book, LocalDateTime orderDate) {
+    public Order(int id, String customerName, String customerEmail, int bookId, LocalDateTime orderDate) {
         this.id = id;
         this.customerName = customerName;
         this.customerEmail = customerEmail;
-        this.book = book;
+        this.bookId = bookId;
         this.orderDate = LocalDateTime.now();
     }
+
+    public Order(String customerName, String customerEmail, int bookId) {
+        this.customerName = customerName;
+        this.customerEmail = customerEmail;
+        this.bookId = bookId;
+        this.orderDate = LocalDateTime.now();
+    }
+
+    public Order() {}
 
     public void setId(int id) {
         this.id = id;
@@ -38,6 +48,10 @@ public class Order {
 
     public void setBook(Book book) {
         this.book = book;
+    }
+
+    public void setBookId(int bookId) {
+        this.bookId = bookId;
     }
 
     public void setOrderDate(LocalDateTime orderDate) {
@@ -58,6 +72,10 @@ public class Order {
 
     public Book getBook() {
         return book;
+    }
+
+    public int getBookId() {
+        return bookId;
     }
 
     public LocalDateTime getOrderDate() {

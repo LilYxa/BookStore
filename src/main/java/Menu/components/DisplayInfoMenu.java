@@ -4,7 +4,10 @@ import DataBase.*;
 import Menu.Menu;
 import Models.Author;
 import Models.Book;
+import Models.Category;
+import Models.Order;
 
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Scanner;
 
@@ -16,6 +19,8 @@ public class DisplayInfoMenu implements Menu {
     private AuthorRepository authorRepository;
     private CategoryRepository categoryRepository;
 
+    private OrderRepository orderRepository;
+
     private Scanner in = new Scanner(System.in);
 
     public DisplayInfoMenu(ConnectionToDB db) {
@@ -24,6 +29,7 @@ public class DisplayInfoMenu implements Menu {
         this.bookRepository = new BookRepository(db.getConnection());
         this.authorRepository = new AuthorRepository(db.getConnection());
         this.categoryRepository = new CategoryRepository(db.getConnection());
+        this.orderRepository = new OrderRepository(db.getConnection());
     }
         @Override
         public void displayMenu() {
@@ -35,6 +41,7 @@ public class DisplayInfoMenu implements Menu {
             System.out.println("5) Вывести категорию");
             System.out.println("6) Вывести все категории");
             System.out.println("7) Вывести заказ");
+            System.out.println("8) Отчёт по заказам");
             System.out.println("0) Вернуться назад");
         }
 
@@ -78,7 +85,8 @@ public class DisplayInfoMenu implements Menu {
                 {
                     System.out.print("Введите имя автора: ");
                     String authorName = in.nextLine();
-                    Author author = authorRepository.getAuthorByName(authorName);
+//                    Author author = authorRepository.getAuthorByName(authorName);
+                    Author author = authorRepository.getAuthor(authorName);
                     if (author == null)
                         System.err.println("Такого автора нет в базе данных!");
                     else {
@@ -102,6 +110,61 @@ public class DisplayInfoMenu implements Menu {
                     }
                     printTable(data);
                     break;
+                }
+                case 5:
+                {
+                    System.out.print("Введите название категории: ");
+                    String categoryName = in.nextLine();
+                    Category category = categoryRepository.getCategory(categoryName);
+                    if (category == null)
+                        System.err.println("Такой категории в базе нет!");
+                    else {
+                        String[][] data = {
+                                {"ID", "Название категории"},
+                                {String.valueOf(category.getId()), category.getName()}
+                        };
+                        printTable(data);
+                    }
+                    break;
+                }
+                case 6:
+                {
+                    List<Category> categories = categoryRepository.getAllCategories();
+                    String[][] data = new String[categories.size() + 1][2];
+                    data[0] = new String[]{"ID", "Название категории"};
+
+                    for (int i = 0; i < categories.size(); i++) {
+                        Category category = categories.get(i);
+                        data[i + 1] = new String[]{String.valueOf(category.getId()), category.getName()};
+                    }
+                    printTable(data);
+                    break;
+                }
+                case 7:
+                {
+                    System.out.print("Введите номер заказа: ");
+                    int id = in.nextInt();
+                    Order order = orderRepository.getOrder(id);
+//                    Book book = bookRepository.getBook(id);
+
+                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss");
+                    String formattedDate = order.getOrderDate().format(formatter);
+
+                    if (order == null)
+                        System.err.println("Заказа с таким номером не существует!");
+                    else {
+                        String[][] data = {
+                                {"ID", "Имя покупателя", "E-mail покупателя", "ID книги", "Дата заказа"},
+                                {String.valueOf(order.getId()), order.getCustomerName(), order.getCustomerEmail(),
+                                        String.valueOf(order.getId()), formattedDate}
+                        };
+                        printTable(data);
+                    }
+                    break;
+                }
+                case 8:
+                {
+                    orderRepository.printReport();
                 }
             }
         }

@@ -19,6 +19,8 @@ public class Author {
         this.birthYear = birthYear;
     }
 
+    public Author() {}
+
     public void setId(int id) {
         this.id = id;
     }

@@ -10,73 +10,89 @@ import java.util.List;
 public class AuthorRepository {
     private Connection connection;
 
+    private Manager DAO;
+
     public AuthorRepository(Connection connection) {
         this.connection = connection;
+        this.DAO = new Manager(connection);
     }
+
+//    public void addAuthor(Author author) {
+//        String sql = "INSERT INTO authors(name, country, birth_year) VALUES(?, ?, ?)";
+//        try (PreparedStatement statement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+//            statement.setString(1, author.getName());
+//            statement.setString(2, author.getCountry());
+//            statement.setInt(3, author.getBirthYear());
+//            int rowsInserted = statement.executeUpdate();
+//            if (rowsInserted == 0)
+//                throw new SQLException("Ошибка выполнения!");
+//
+//            ResultSet resultSet = statement.getGeneratedKeys();
+//            if (resultSet.next()) {
+//                int id = resultSet.getInt(1);
+//                author.setId(id);
+//            } else
+//                throw new SQLException("Ошибка при добавлении автора!");
+//        } catch (SQLException e) {
+//            System.err.println("Ошибка при выполнении запроса!");
+//            e.printStackTrace();
+//        }
+//    }
 
     public void addAuthor(Author author) {
-        String sql = "INSERT INTO authors(name, country, birth_year) VALUES(?, ?, ?)";
-        try (PreparedStatement statement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-            statement.setString(1, author.getName());
-            statement.setString(2, author.getCountry());
-            statement.setInt(3, author.getBirthYear());
-            int rowsInserted = statement.executeUpdate();
-            if (rowsInserted == 0)
-                throw new SQLException("Ошибка выполнения!");
-
-            ResultSet resultSet = statement.getGeneratedKeys();
-            if (resultSet.next()) {
-                int id = resultSet.getInt(1);
-                author.setId(id);
-            } else
-                throw new SQLException("Ошибка при добавлении автора!");
-        } catch (SQLException e) {
-            System.err.println("Ошибка при выполнении запроса!");
-            e.printStackTrace();
-        }
+        String[] fields = {"name", "country", "birth_year"};
+        Object[] values = {author.getName(), author.getCountry(), author.getBirthYear()};
+        int id = DAO.insertData("authors", fields, values);
+        author.setId(id);
     }
 
-    public Author getAuthor(int id) {
-        String sql = "SELECT * FROM authors WHERE id = ?";
-        try (PreparedStatement statement = connection.prepareStatement(sql)) {
-            statement.setInt(1, id);
-            ResultSet resultSet = statement.executeQuery();
+//    public Author getAuthor(int id) {
+//        String sql = "SELECT * FROM authors WHERE id = ?";
+//        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+//            statement.setInt(1, id);
+//            ResultSet resultSet = statement.executeQuery();
+//
+//            if (resultSet.next()) {
+//                return new Author(
+//                    resultSet.getInt("id"),
+//                    resultSet.getString("name"),
+//                    resultSet.getString("country"),
+//                    resultSet.getInt("birth_year")
+//                );
+//            }
+//        } catch (SQLException e) {
+//            System.err.println("Ошибка при выполнении запроса!");
+//            e.printStackTrace();
+//        }
+//        return null;
+//    }
 
-            if (resultSet.next()) {
-                return new Author(
-                    resultSet.getInt("id"),
-                    resultSet.getString("name"),
-                    resultSet.getString("country"),
-                    resultSet.getInt("birth_year")
-                );
-            }
-        } catch (SQLException e) {
-            System.err.println("Ошибка при выполнении запроса!");
-            e.printStackTrace();
-        }
-        return null;
+    public Author getAuthor (Object identifier) {
+        Author author = new Author();
+        String field = (identifier instanceof String) ? "name" : "id";
+        return (Author) DAO.getData("authors", field, identifier, author);
     }
 
-    public Author getAuthorByName(String name) {
-        String sql = "SELECT * FROM authors WHERE name = ?";
-        try (PreparedStatement statement = connection.prepareStatement(sql)) {
-            statement.setString(1, name);
-            ResultSet resultSet = statement.executeQuery();
-
-            if (resultSet.next()) {
-                return new Author(
-                        resultSet.getInt("id"),
-                        resultSet.getString("name"),
-                        resultSet.getString("country"),
-                        resultSet.getInt("birth_year")
-                );
-            }
-        } catch (SQLException e) {
-            System.err.println("Ошибка при выполнении запроса!");
-            e.printStackTrace();
-        }
-        return null;
-    }
+//    public Author getAuthorByName(String name) {
+//        String sql = "SELECT * FROM authors WHERE name = ?";
+//        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+//            statement.setString(1, name);
+//            ResultSet resultSet = statement.executeQuery();
+//
+//            if (resultSet.next()) {
+//                return new Author(
+//                        resultSet.getInt("id"),
+//                        resultSet.getString("name"),
+//                        resultSet.getString("country"),
+//                        resultSet.getInt("birth_year")
+//                );
+//            }
+//        } catch (SQLException e) {
+//            System.err.println("Ошибка при выполнении запроса!");
+//            e.printStackTrace();
+//        }
+//        return null;
+//    }
 
     public List<Author> getAllAuthors() {
         String sql = "SELECT * FROM authors";

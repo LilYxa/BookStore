@@ -22,6 +22,8 @@ public class Book {
         this.price = price;
     }
 
+    public Book() {}
+
     public void setId(int id) {
         this.id = id;
     }

@@ -3,7 +3,9 @@ package Menu.components;
 import DataBase.*;
 import Menu.Menu;
 import Models.Author;
+import Models.Book;
 import Models.Category;
+import Models.Order;
 
 import java.util.Scanner;
 
@@ -13,6 +15,7 @@ public class AddRecordMenu implements Menu {
     private BookRepository bookRepository;
     private AuthorRepository authorRepository;
     private CategoryRepository categoryRepository;
+    private OrderRepository orderRepository;
 
     private Scanner in = new Scanner(System.in);
 
@@ -22,6 +25,7 @@ public class AddRecordMenu implements Menu {
         this.bookRepository = new BookRepository(db.getConnection());
         this.authorRepository = new AuthorRepository(db.getConnection());
         this.categoryRepository = new CategoryRepository(db.getConnection());
+        this.orderRepository = new OrderRepository(db.getConnection());
     }
     @Override
     public void displayMenu() {
@@ -55,6 +59,24 @@ public class AddRecordMenu implements Menu {
                 Category category = new Category(category_title);
                 categoryRepository.addCategory(category);
                 break;
+            case 4:
+                System.out.print("Введите имя покупателя: ");
+                String customer_name = in.nextLine();
+                System.out.print("Введите e-mail покупателя: ");
+                String customer_email = in.nextLine();
+                System.out.print("Введите название книги: ");
+                String book_title = in.nextLine();
+
+                Book book = bookRepository.getBook(book_title);
+                if (book == null) {
+                    System.err.println("Такой книги нет в наличии.");
+                    break;
+                }
+                else {
+                    Order order = new Order(customer_name, customer_email, book.getId());
+                    orderRepository.addOrder(order);
+                    break;
+                }
         }
     }
 }

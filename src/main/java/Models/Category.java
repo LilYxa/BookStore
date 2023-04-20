@@ -13,6 +13,8 @@ public class Category {
         this.name = name;
     }
 
+    public Category() {}
+
     public void setId(int id) {
         this.id = id;
     }
