@@ -1,6 +1,5 @@
 package DataBase;
 
-import Models.Author;
 import Models.Category;
 
 import java.sql.*;
@@ -10,11 +9,11 @@ import java.util.List;
 public class CategoryRepository {
     private Connection connection;
 
-    private Manager DAO;
+    private BookStoreManager DAO;
 
     public CategoryRepository(Connection connection) {
         this.connection = connection;
-        this.DAO = new Manager(connection);
+        this.DAO = new BookStoreManager(connection);
     }
 
 //    public void addCategory(Category category) {
@@ -121,18 +120,23 @@ public class CategoryRepository {
         }
     }
 
-    public void deleteCategory(int id) {
-        String sql = "DELETE FROM categories WHERE id = ?";
-        try (PreparedStatement statement = connection.prepareStatement(sql)) {
-            statement.setInt(1, id);
-            int rowsDeleted = statement.executeUpdate();
-            if (rowsDeleted > 0)
-                System.out.println("Категория успешно удалена!");
-            else
-                System.out.println("Ошибка при удалении категории!");
-        } catch (SQLException e) {
-            System.err.println("Ошибка при выполнении запроса!");
-            e.printStackTrace();
-        }
+//    public void deleteCategory(int id) {
+//        String sql = "DELETE FROM categories WHERE id = ?";
+//        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+//            statement.setInt(1, id);
+//            int rowsDeleted = statement.executeUpdate();
+//            if (rowsDeleted > 0)
+//                System.out.println("Категория успешно удалена!");
+//            else
+//                System.out.println("Ошибка при удалении категории!");
+//        } catch (SQLException e) {
+//            System.err.println("Ошибка при выполнении запроса!");
+//            e.printStackTrace();
+//        }
+//    }
+
+    public void deleteCategory(Object identifier) {
+        String field = (identifier instanceof String) ? "name" : "id";
+        DAO.deleteData("categories", field, identifier);
     }
 }

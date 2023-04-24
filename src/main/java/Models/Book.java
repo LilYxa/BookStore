@@ -6,6 +6,8 @@ public class Book {
     private int author_id;
     private int category_id;
     private float price;
+    private String author_name;
+    private String category_name;
 
     public Book(String title, int author_id, int category_id, float price) {
         this.title = title;
@@ -19,6 +21,14 @@ public class Book {
         this.title = title;
         this.author_id = author_id;
         this.category_id = category_id;
+        this.price = price;
+    }
+
+    public Book(int id, String title, String author_name, String category_name, float price) {
+        this.id = id;
+        this.title = title;
+        this.author_name = author_name;
+        this.category_name = category_name;
         this.price = price;
     }
 
@@ -62,6 +72,14 @@ public class Book {
 
     public float getPrice() {
         return price;
+    }
+
+    public String getAuthor_name() {
+        return author_name;
+    }
+
+    public String getCategory_name() {
+        return category_name;
     }
 
     @Override

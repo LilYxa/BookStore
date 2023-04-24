@@ -11,7 +11,6 @@ import java.util.Scanner;
 
 public class AddRecordMenu implements Menu {
     private ConnectionToDB db;
-    private final BookStoreManager bs_manager;
     private BookRepository bookRepository;
     private AuthorRepository authorRepository;
     private CategoryRepository categoryRepository;
@@ -21,7 +20,6 @@ public class AddRecordMenu implements Menu {
 
     public AddRecordMenu(ConnectionToDB db) {
         this.db = db;
-        bs_manager = new BookStoreManager(db.getConnection());
         this.bookRepository = new BookRepository(db.getConnection());
         this.authorRepository = new AuthorRepository(db.getConnection());
         this.categoryRepository = new CategoryRepository(db.getConnection());
@@ -40,7 +38,7 @@ public class AddRecordMenu implements Menu {
     public void handleInput(int input) {
         switch (input) {
             case 1:
-                bs_manager.addBook();
+                bookRepository.addBook();
                 break;
             case 2:
                 System.out.print("Введите ФИО автора: ");

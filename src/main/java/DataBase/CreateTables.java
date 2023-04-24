@@ -45,9 +45,9 @@ public class CreateTables {
                                 "title VARCHAR(255), " +
                                 "author_id INTEGER NOT NULL, " +
                                 "category_id INTEGER NOT NULL, " +
-                                "price NUMERIC(10, 2), " +
-                                "FOREIGN KEY (author_id) REFERENCES authors(id), " +
-                                "FOREIGN KEY (category_id) REFERENCES categories(id))";
+                                "price NUMERIC(10, 2) CHECK ( price > 0 ), " +
+                                "FOREIGN KEY (author_id) REFERENCES authors(id) ON DELETE CASCADE, " +
+                                "FOREIGN KEY (category_id) REFERENCES categories(id) ON DELETE CASCADE)";
 
         try (Statement statement = connection.createStatement()) {
             statement.executeUpdate(sql_createBooks);
@@ -61,7 +61,7 @@ public class CreateTables {
                 "(id SERIAL PRIMARY KEY, " +
                 "customer_name VARCHAR(255) NOT NULL, " +
                 "customer_email VARCHAR(255) NOT NULL, " +
-                "book_id INTEGER REFERENCES books(id), " +
+                "book_id INTEGER REFERENCES books(id) ON DELETE CASCADE, " +
                 "order_date TIMESTAMP DEFAULT NOW())";
 
         try (Statement statement = connection.createStatement()) {

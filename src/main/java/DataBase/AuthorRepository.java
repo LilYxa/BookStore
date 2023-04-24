@@ -2,7 +2,6 @@ package DataBase;
 
 import Models.Author;
 
-import java.awt.geom.RectangularShape;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -10,11 +9,11 @@ import java.util.List;
 public class AuthorRepository {
     private Connection connection;
 
-    private Manager DAO;
+    private BookStoreManager DAO;
 
     public AuthorRepository(Connection connection) {
         this.connection = connection;
-        this.DAO = new Manager(connection);
+        this.DAO = new BookStoreManager(connection);
     }
 
 //    public void addAuthor(Author author) {
@@ -131,18 +130,23 @@ public class AuthorRepository {
         }
     }
 
-    public void deleteAuthor(int id) {
-        String sql = "DELETE FROM authors WHERE id = ?";
-        try (PreparedStatement statement = connection.prepareStatement(sql)) {
-            statement.setInt(1, id);
-            int rowsDeleted = statement.executeUpdate();
-            if (rowsDeleted > 0)
-                System.out.println("Автор успешно удален!");
-            else
-                System.out.println("Ошибка при удалении автора!");
-        } catch (SQLException e) {
-            System.err.println("Ошибка при выполнении запроса!");
-            e.printStackTrace();
-        }
+//    public void deleteAuthor(int id) {
+//        String sql = "DELETE FROM authors WHERE id = ?";
+//        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+//            statement.setInt(1, id);
+//            int rowsDeleted = statement.executeUpdate();
+//            if (rowsDeleted > 0)
+//                System.out.println("Автор успешно удален!");
+//            else
+//                System.out.println("Ошибка при удалении автора!");
+//        } catch (SQLException e) {
+//            System.err.println("Ошибка при выполнении запроса!");
+//            e.printStackTrace();
+//        }
+//    }
+
+    public void deleteAuthor(Object identifier) {
+        String field = (identifier instanceof String) ? "name" : "id";
+        DAO.deleteData("authors", field, identifier);
     }
 }

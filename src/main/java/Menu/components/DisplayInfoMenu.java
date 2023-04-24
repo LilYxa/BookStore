@@ -14,7 +14,6 @@ import java.util.Scanner;
 public class DisplayInfoMenu implements Menu {
 
     private ConnectionToDB db;
-    private final BookStoreManager bs_manager;
     private BookRepository bookRepository;
     private AuthorRepository authorRepository;
     private CategoryRepository categoryRepository;
@@ -25,7 +24,6 @@ public class DisplayInfoMenu implements Menu {
 
     public DisplayInfoMenu(ConnectionToDB db) {
         this.db = db;
-        bs_manager = new BookStoreManager(db.getConnection());
         this.bookRepository = new BookRepository(db.getConnection());
         this.authorRepository = new AuthorRepository(db.getConnection());
         this.categoryRepository = new CategoryRepository(db.getConnection());
@@ -70,12 +68,12 @@ public class DisplayInfoMenu implements Menu {
                     List<Book> books = bookRepository.getAllBooks();
                     //массив data размером на один больше, чем количество книг в списке, чтобы уместить в него шапку
                     String[][] data = new String[books.size() + 1][5];
-                    data[0] = new String[]{"ID", "Название", "ID автора", "ID категории", "Цена"};
+                    data[0] = new String[]{"ID", "Название", "Имя автора", "Название категории", "Цена"};
 
                     for (int i = 0; i < books.size(); i++) {
                         Book book = books.get(i);
-                        data[i + 1] = new String[]{String.valueOf(book.getId()), book.getTitle(), String.valueOf(book.getAuthor_id()),
-                                String.valueOf(book.getCategory_id()), String.valueOf(book.getPrice())};
+                        data[i + 1] = new String[]{String.valueOf(book.getId()), book.getTitle(), book.getAuthor_name(),
+                                book.getCategory_name(), String.valueOf(book.getPrice())};
                     }
 
                     printTable(data);
@@ -147,16 +145,15 @@ public class DisplayInfoMenu implements Menu {
                     Order order = orderRepository.getOrder(id);
 //                    Book book = bookRepository.getBook(id);
 
-                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss");
-                    String formattedDate = order.getOrderDate().format(formatter);
-
                     if (order == null)
                         System.err.println("Заказа с таким номером не существует!");
                     else {
+                        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss");
+                        String formattedDate = order.getOrderDate().format(formatter);
                         String[][] data = {
                                 {"ID", "Имя покупателя", "E-mail покупателя", "ID книги", "Дата заказа"},
                                 {String.valueOf(order.getId()), order.getCustomerName(), order.getCustomerEmail(),
-                                        String.valueOf(order.getId()), formattedDate}
+                                        String.valueOf(order.getBookId()), formattedDate}
                         };
                         printTable(data);
                     }

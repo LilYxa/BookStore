@@ -2,20 +2,18 @@ package DataBase;
 
 import Models.Order;
 
-import javax.swing.plaf.nimbus.State;
 import java.sql.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Stack;
 
 public class OrderRepository {
     private Connection connection;
 
-    private Manager DAO;
+    private BookStoreManager DAO;
 
     public OrderRepository(Connection connection) {
         this.connection = connection;
-        DAO = new Manager(connection);
+        DAO = new BookStoreManager(connection);
     }
 
     public void addOrder(Order order) {
@@ -38,7 +36,9 @@ public class OrderRepository {
                     "ORDER BY order_count DESC";
         try (Statement statement = connection.createStatement()) {
             ResultSet resultSet = statement.executeQuery(sql);
+            boolean dataFound = false;
             while (resultSet.next()) {
+                dataFound = true;
                 String bookTitle = resultSet.getString("title");
                 int orderCount = resultSet.getInt("order_count");
                 String author_name = resultSet.getString("name");
@@ -65,11 +65,15 @@ public class OrderRepository {
                 }
                 System.out.println("---------------------------------------------------------------");
             }
+            if (!dataFound)
+                System.out.println("Нет информации для отчёта");
         } catch (SQLException e) {
             System.err.println("Ошибка выполнения запроса!");
             e.printStackTrace();
         }
     }
 
-
+    public void deleteOrder(int id) {
+        DAO.deleteData("orders", "id", id);
+    }
 }

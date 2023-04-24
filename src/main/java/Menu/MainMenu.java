@@ -4,6 +4,7 @@ import DataBase.ConnectionToDB;
 import Menu.components.AddRecordMenu;
 import Menu.components.DisplayInfoMenu;
 import Menu.components.RemoveRecordMenu;
+import Menu.components.UpdateRecordMenu;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,8 +18,9 @@ public class MainMenu implements Menu {
         this.db = db;
         subMenus = new ArrayList<>();
         subMenus.add(new AddRecordMenu(db));
-        subMenus.add(new RemoveRecordMenu());
+        subMenus.add(new RemoveRecordMenu(db));
         subMenus.add(new DisplayInfoMenu(db));
+        subMenus.add(new UpdateRecordMenu(db));
     }
 
     @Override
@@ -27,6 +29,7 @@ public class MainMenu implements Menu {
         System.out.println("1) Добавить запись");
         System.out.println("2) Удалить запись");
         System.out.println("3) Вывод информации");
+        System.out.println("4) Обновление информации");
         System.out.println("0) Выйти из приложения");
     }
 
@@ -47,6 +50,11 @@ public class MainMenu implements Menu {
                 subMenus.get(2).displayMenu();
                 subMenuInput = in.nextInt();
                 subMenus.get(2).handleInput(subMenuInput);
+                break;
+            case 4:
+                subMenus.get(3).displayMenu();
+                subMenuInput = in.nextInt();
+                subMenus.get(3).handleInput(subMenuInput);
                 break;
             case 0:
                 db.closeConnection();

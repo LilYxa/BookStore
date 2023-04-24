@@ -1,4 +1,3 @@
-import DataBase.BookStoreManager;
 import DataBase.ConnectionToDB;
 import DataBase.CreateTables;
 import Menu.Menu;
@@ -21,8 +20,6 @@ public class Main {
         createTables.CreateAuthorsTable();
         createTables.CreateCategoriesTable();
         createTables.CreateOrdersTable();
-
-        BookStoreManager BSmanager = new BookStoreManager(connection);
 
         Scanner in = new Scanner(System.in);
 
