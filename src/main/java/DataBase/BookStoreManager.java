@@ -7,6 +7,8 @@ import Models.Order;
 
 import java.sql.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 public class BookStoreManager {
     private Connection connection;
@@ -120,16 +122,22 @@ public class BookStoreManager {
         }
     }
 
-    public void updateData(String table, String field, Object value, int id) {
-        String sql = "UPDATE " + table + " SET " + field + " = ? WHERE id = ?";
+    public void updateData(String table, List<String> fields, ArrayList<Object> values, int id) {
+        StringBuilder sqlBuilder = new StringBuilder("UPDATE " + table + " SET ");
+        for (int i = 0; i < fields.size(); i++) {
+            sqlBuilder.append(fields.get(i)).append(" = ?");
+            if (i != fields.size() - 1)
+                sqlBuilder.append(", ");
+        }
+        sqlBuilder.append(" WHERE id = ?");
+        String sql = sqlBuilder.toString();
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
-            preparedStatement.setObject(1, value);
-            preparedStatement.setInt(2, id);
-            int rowsUpdated = preparedStatement.executeUpdate();
-            if (rowsUpdated > 0)
-                System.out.println("Успешное обновление данных!");
-            else
-                System.err.println("Ошибка при обновлении данных");
+            for (int i = 0; i < values.size(); i++) {
+                preparedStatement.setObject(i + 1, values.get(i));
+            }
+            preparedStatement.setInt(values.size() + 1, id);
+            preparedStatement.executeUpdate();
+            System.out.println("Данные успешно обновлены!");
         } catch (SQLException e) {
             System.err.println("Ошибка выполнения запроса!");
             e.printStackTrace();

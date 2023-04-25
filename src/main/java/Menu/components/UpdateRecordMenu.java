@@ -103,16 +103,16 @@ public class UpdateRecordMenu implements Menu {
         } while (!input.equals("0"));
 
         //Запрос новых значений для выбранных полей
+        ArrayList<Object> newValues = new ArrayList<>();
         for (String field : selectedFields) {
             System.out.printf("Введите новое значение для поля %s: ", field);
-            Object newValue = null;
             if (in.hasNextInt())
-                newValue = in.nextInt();
+                newValues.add(in.nextInt());
             else if (in.hasNextFloat())
-                newValue = in.nextFloat();
+                newValues.add(in.nextFloat());
             else
-                newValue = in.nextLine();
-            DAO.updateData(tableName, field, newValue, id);
+                newValues.add(in.nextLine());
         }
+        DAO.updateData(tableName, selectedFields, newValues, id);
     }
 }
